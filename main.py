@@ -1,7 +1,7 @@
 from BoardModule import Position, Board
+from ApplicationModule import Screen
 
-P = Position(3,4)
 
 tab = Board(8,8)
 
-print(f'Posição: {P}')
+Screen.PrintBoard(tab)

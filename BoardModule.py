@@ -59,4 +59,14 @@ class Board:
     def __init__(self, row=8, col=8):
         self._row = row
         self._col = col
-        pieces = CreateMatrix(row,col,None)
+        self._pieces = CreateMatrix(row,col,None)
+
+    @property
+    def row(self):
+        return self._row
+    @property
+    def col(self):
+        return self._col
+    
+    def piece(self, row, col):
+        return self._pieces[row][col]
