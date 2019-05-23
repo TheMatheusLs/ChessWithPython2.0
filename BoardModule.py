@@ -1,36 +1,42 @@
 #Representação do tabuleiro e movimentação básica do tabuleiro (Retirar as peças)
-from HelpModule import CreateMatrix
-class Position:
+from HelpModule import CreateMatrix         #Importa o módulo de criação de matriz
+
+class Position:                             #Classe posição
     def __init__(self, row, col):
         self._row = row
         self._col = col
     
-    @property
+    @property                               #Método GET 'Row'
     def row(self):
         return self._row
-    @row.setter
+    @row.setter                             #Método SET 'Row'
     def row(self, row):
         self._row = row
     
-    @property
+    @property                               #Método GET 'Col'
     def col(self):
         return self._col
-    @col.setter
+    @col.setter                             #Método SET 'Col'
     def col(self, row):
         self._col = col
 
     def __str__(self):
         return f'{self.row},{self.col}'
 
-class Collor:
-    def Collor(self):
-        colorList = ['Branca','Preta','Vermelho'] 
-        return colorList
+class Color:                                #Classe com as cores das peças
+    
+    @property
+    def preta(self):
+        return 'Preta'
 
-class Piece:
+    @property
+    def branca(self):
+        return 'Branca'
 
-    def __init__(self, position, board, color):
-        self._position = position
+class Piece:                                #Classe peça
+
+    def __init__(self, board, color):
+        self._position = None
         self._board = board
         self._color = color
         self._move_count = 0
@@ -54,7 +60,7 @@ class Piece:
     def board(self):
         return self._board
 
-class Board:
+class Board:                                        #Classe tabuleiro
     
     def __init__(self, row=8, col=8):
         self._row = row
@@ -70,3 +76,7 @@ class Board:
     
     def piece(self, row, col):
         return self._pieces[row][col]
+
+    def putPiece(self, piece, pos):
+        self._pieces[pos.row][pos.col] = piece  #Coloca uma 'piece' na matriz de peças na posição 'pos'
+        piece.position = pos                    #Modifica a posição da peça para 'pos'
