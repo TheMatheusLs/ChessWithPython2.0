@@ -73,10 +73,34 @@ class Board:                                        #Classe tabuleiro
     @property
     def col(self):
         return self._col
-    
-    def piece(self, row, col):
-        return self._pieces[row][col]
+
+    def piece(self, pos):              #Recebe uma posição e retorna a peça localizada naquela posição
+        return self._pieces[pos.row][pos.col]
+
+    def thereIsPiece(self, pos):            #Tem uma peça na posição ? 
+        self.validatePosition(pos)              #Valida a posição
+        return self.piece(pos) is not None      #Retorna se a peça é diferente de None
 
     def putPiece(self, piece, pos):
+        
+        if self.thereIsPiece(pos):
+            raise BoardException(f'Já existe uma peça na posição {pos}')    #Lança uma exceção caso já tenha uma peça nessa posição
         self._pieces[pos.row][pos.col] = piece  #Coloca uma 'piece' na matriz de peças na posição 'pos'
         piece.position = pos                    #Modifica a posição da peça para 'pos'
+
+    def validPosition(self, pos):      #Verifica a validade da posição, retornando True para uma posição correta
+        if pos.row < 0 or pos.row >= self.row or pos.col < 0 or pos.col >= self.col:
+            return False
+        else:
+            return True
+    
+    def validatePosition(self, pos):
+        if not self.validPosition(pos):
+            raise BoardException('Posição Inválida!') #Solta uma exceção caso a posição não seja válida
+
+class BoardException(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)

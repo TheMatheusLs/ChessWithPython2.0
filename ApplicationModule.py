@@ -1,4 +1,5 @@
 #Aplicativo que consome as bibliotecas do jogo e comunica com usuário
+from BoardModule import Position
 
 class Screen:                                               #Classe para a tela
 
@@ -6,8 +7,8 @@ class Screen:                                               #Classe para a tela
     def PrintBoard(board):                                  #Método para imprimir um tabuleiro
         for r in range(board.row):                          
             for c in range(board.col):
-                if (board.piece(r,c) == None):
+                if (board.piece(Position(r,c)) == None):
                     print('- ',end='')
                 else:
-                    print(f'{board.piece(r,c)} ',end='')
+                    print(f'{board.piece(Position(r,c))} ',end='')
             print()
