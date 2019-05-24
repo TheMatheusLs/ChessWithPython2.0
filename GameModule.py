@@ -123,10 +123,18 @@ class ChessPositon:
 class ChessGame:
     def __init__(self):
         self._board = Board(8,8)
-        self._currentPlayer = Color.BRANCA
+        self._currentPlayer = Color.WHITE
         self._shift = 1
         self._finish = False
         self.putPiecesInit()
+
+    @property
+    def shift(self):
+        return self._shift
+
+    @property
+    def currentPlayer(self):
+        return self._currentPlayer
 
     @property
     def finish(self):
@@ -134,22 +142,47 @@ class ChessGame:
 
     @property
     def board(self):
-        return self._board
+        return self._board       
 
     def putPiecesInit(self):
-        self.board.putPiece(Tower(self.board,Color.BRANCA),ChessPositon('c',1).toPosition())  
-        self.board.putPiece(Tower(self.board,Color.BRANCA),ChessPositon('c',2).toPosition())
-        self.board.putPiece(Tower(self.board,Color.BRANCA),ChessPositon('d',2).toPosition())
-        self.board.putPiece(Tower(self.board,Color.BRANCA),ChessPositon('e',2).toPosition())
-        self.board.putPiece(Tower(self.board,Color.BRANCA),ChessPositon('e',1).toPosition())
-        self.board.putPiece(King(self.board,Color.BRANCA),ChessPositon('d',1).toPosition())
+        self.board.putPiece(Tower(self.board,Color.WHITE),ChessPositon('c',1).toPosition())  
+        self.board.putPiece(Tower(self.board,Color.WHITE),ChessPositon('c',2).toPosition())
+        self.board.putPiece(Tower(self.board,Color.WHITE),ChessPositon('d',2).toPosition())
+        self.board.putPiece(Tower(self.board,Color.WHITE),ChessPositon('e',2).toPosition())
+        self.board.putPiece(Tower(self.board,Color.WHITE),ChessPositon('e',1).toPosition())
+        self.board.putPiece(King(self.board,Color.WHITE),ChessPositon('d',1).toPosition())
 
-        self.board.putPiece(Tower(self.board,Color.PRETA),ChessPositon('c',7).toPosition())  
-        self.board.putPiece(Tower(self.board,Color.PRETA),ChessPositon('c',8).toPosition())
-        self.board.putPiece(Tower(self.board,Color.PRETA),ChessPositon('d',7).toPosition())
-        self.board.putPiece(Tower(self.board,Color.PRETA),ChessPositon('e',7).toPosition())
-        self.board.putPiece(Tower(self.board,Color.PRETA),ChessPositon('e',8).toPosition())
-        self.board.putPiece(King(self.board,Color.PRETA),ChessPositon('d',8).toPosition())
+        self.board.putPiece(Tower(self.board,Color.BLACK),ChessPositon('c',7).toPosition())  
+        self.board.putPiece(Tower(self.board,Color.BLACK),ChessPositon('c',8).toPosition())
+        self.board.putPiece(Tower(self.board,Color.BLACK),ChessPositon('d',7).toPosition())
+        self.board.putPiece(Tower(self.board,Color.BLACK),ChessPositon('e',7).toPosition())
+        self.board.putPiece(Tower(self.board,Color.BLACK),ChessPositon('e',8).toPosition())
+        self.board.putPiece(King(self.board,Color.BLACK),ChessPositon('d',8).toPosition())
+
+    def makeAMove(self,origin, destiny):
+        self.makeMove(origin, destiny)
+        self._shift += 1
+        self.changePlayer()
+
+    def validateOriginPosition(self, pos):
+        if self.board.piece(pos) == None:
+            raise BoardException("Não existe peça na posição de origem escolhida!")
+        if self.currentPlayer != self.board.piece(pos).color:
+            raise BoardException("A peça de origem escolhida não é sua!")
+        if not self.board.piece(pos).thereIsMovementPossible():
+            raise BoardException("Não há movimentos disponíveis para a peça escolhida!")
+
+    def validateOriginDestiny(self, origin, destiny):
+        if not self.board.piece(origin).canMoveTo(destiny):
+            raise BoardException("Posição de destino inválida!")
+
+
+    def changePlayer(self):
+        if self._currentPlayer == Color.WHITE:
+            self._currentPlayer = Color.BLACK
+        else:
+            self._currentPlayer = Color.WHITE
+
     def makeMove(self, origin, destiny):
         p = self.board.removePiece(origin)     #Remove a peça da origem e salva em 'p'
         p.increaseMovement()                    #Acrescenta o movimento da peça 'p'

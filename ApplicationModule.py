@@ -38,7 +38,7 @@ class Screen:                                               #Classe para a tela
         if piece == None:
             print('- ',end='')
         else:
-            if (piece.color == Color.BRANCA):
+            if (piece.color == Color.WHITE):
                 print(piece,end=' ')
             else:
                 print('\033[33m',end='') #Código da cor

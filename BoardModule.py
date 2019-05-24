@@ -1,5 +1,6 @@
 #Representação do tabuleiro e movimentação básica do tabuleiro (Retirar as peças)
 from HelpModule import CreateMatrix         #Importa o módulo de criação de matriz
+#from GameModule import *
 from enum import Enum
 import abc
 
@@ -30,8 +31,8 @@ class Position:                             #Classe posição
         return f'{self.row},{self.col}'
 
 class Color(Enum):                          #Classe com as cores das peças
-    BRANCA = 1
-    PRETA = 2
+    WHITE = 'White'
+    BLACK = 'Black'
 
 class Piece(abc.ABC):                                #Classe peça
 
@@ -66,6 +67,18 @@ class Piece(abc.ABC):                                #Classe peça
     @abc.abstractmethod
     def possibleMoves(self):
         pass
+
+    def thereIsMovementPossible(self):
+        mat = self.possibleMoves()
+        for r in range(self.board.row):
+            for c in range(self.board.col):
+                if mat[r][c]:
+                    return True
+        return False
+
+    def  canMoveTo(self, pos):
+        return self.possibleMoves()[pos.row][pos.col]
+
 
 class Board:                                        #Classe tabuleiro
     
