@@ -54,6 +54,9 @@ class Piece:                                #Classe peça
     @property
     def board(self):
         return self._board
+    
+    def increaseMovement(self):
+        self._move_count +=1
 
 class Board:                                        #Classe tabuleiro
     
@@ -77,11 +80,18 @@ class Board:                                        #Classe tabuleiro
         return self.piece(pos) is not None      #Retorna se a peça é diferente de None
 
     def putPiece(self, piece, pos):
-        
         if self.thereIsPiece(pos):
             raise BoardException(f'Já existe uma peça na posição {pos}')    #Lança uma exceção caso já tenha uma peça nessa posição
         self._pieces[pos.row][pos.col] = piece  #Coloca uma 'piece' na matriz de peças na posição 'pos'
         piece.position = pos                    #Modifica a posição da peça para 'pos'
+
+    def removePiece(self, pos):
+        if self.piece(pos) == None:
+            return None
+        aux = self.piece(pos)
+        aux.position = None
+        self._pieces[pos.row][pos.col] = None
+        return aux
 
     def validPosition(self, pos):      #Verifica a validade da posição, retornando True para uma posição correta
         if pos.row < 0 or pos.row >= self.row or pos.col < 0 or pos.col >= self.col:

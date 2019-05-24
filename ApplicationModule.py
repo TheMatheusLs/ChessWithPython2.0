@@ -1,8 +1,8 @@
 #Aplicativo que consome as bibliotecas do jogo e comunica com usuário
 from BoardModule import *
-
-import socket 
-import os
+from GameModule import *
+import socket      
+import os           #Módulo do sistema
 
 os.system('echo on')
 
@@ -18,7 +18,6 @@ class Screen:                                               #Classe para a tela
                 else:
                     Screen.printPiece(board.piece(Position(r,c)))
                     print(' ',end='')
-                    #print(f'{board.piece(Position(r,c))} ',end='')
             print()
         print('  a b c d e f g h')
     
@@ -30,4 +29,12 @@ class Screen:                                               #Classe para a tela
             print('\033[0;33m',end='') #Código da cor
             print(piece,end='')
             print('\033[m',end='') #Código para limpar a cor
-        
+
+    @staticmethod
+    def getPositionChess():
+        s = input()
+        col = s[0]
+        row = int(s[1])
+        return ChessPositon(col, row)
+
+

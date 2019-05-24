@@ -1,16 +1,23 @@
 from BoardModule import *  #Importa os modulos do tabuleiro
 from ApplicationModule import *            #Importa o modulo de tela
 from GameModule import *                        #Importa os modulos do jogo
+import socket      
+import os           #Módulo do sistema
 
 try:
-    tab = Board(8,8)        #Cria um tabuleiro 8x8
+       
+    game = ChessGame()
 
-    tab.putPiece(Tower(tab,Color.BRANCA),Position(0,0))  #Colaca uma torre preta no tabuleio na posição x= 0 e y= 0
-    tab.putPiece(Tower(tab,Color.PRETA),Position(1,5))  #Colaca uma torre preta no tabuleio na posição x= 1 e y= 3
-    tab.putPiece(King(tab,Color.PRETA),Position(0,2))   #Colaca um rei preto no tabuleio na posição x= 2 e y= 4
-    tab.putPiece(Tower(tab,Color.BRANCA),Position(3,7))
-    tab.putPiece(King(tab,Color.PRETA),Position(2,7))
-    
-    Screen.PrintBoard(tab)      #Imprime o tabuleiro 'tab'
+    while not game.finish:
+        os.system('cls')
+        Screen.PrintBoard(game.board)      #Imprime o tabuleiro 'tab'
+
+        print('\nOrigem: ')
+        origin = Screen.getPositionChess().toPosition()
+        print('Destino: ')
+        destiny = Screen.getPositionChess().toPosition()
+
+        game.makeMove(origin, destiny)
+
 except BoardException as e:
     print(e)

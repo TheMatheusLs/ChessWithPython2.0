@@ -37,3 +37,44 @@ class ChessPositon:
 
     def __str__(self):
         return f'{self.col.upper()}{self.row}'     
+
+class ChessGame:
+    def __init__(self):
+        self._board = Board(8,8)
+        self._currentPlayer = Color.BRANCA
+        self._shift = 1
+        self._finish = False
+        self.putPiecesInit()
+
+    @property
+    def finish(self):
+        return self._finish
+
+    @property
+    def board(self):
+        return self._board
+
+    def putPiecesInit(self):
+        self.board.putPiece(Tower(self.board,Color.BRANCA),ChessPositon('c',1).toPosition())  
+        self.board.putPiece(Tower(self.board,Color.BRANCA),ChessPositon('c',2).toPosition())
+        self.board.putPiece(Tower(self.board,Color.BRANCA),ChessPositon('d',2).toPosition())
+        self.board.putPiece(Tower(self.board,Color.BRANCA),ChessPositon('e',2).toPosition())
+        self.board.putPiece(Tower(self.board,Color.BRANCA),ChessPositon('e',1).toPosition())
+        self.board.putPiece(King(self.board,Color.BRANCA),ChessPositon('d',1).toPosition())
+
+        self.board.putPiece(Tower(self.board,Color.PRETA),ChessPositon('c',7).toPosition())  
+        self.board.putPiece(Tower(self.board,Color.PRETA),ChessPositon('c',8).toPosition())
+        self.board.putPiece(Tower(self.board,Color.PRETA),ChessPositon('d',7).toPosition())
+        self.board.putPiece(Tower(self.board,Color.PRETA),ChessPositon('e',7).toPosition())
+        self.board.putPiece(Tower(self.board,Color.PRETA),ChessPositon('e',8).toPosition())
+        self.board.putPiece(King(self.board,Color.PRETA),ChessPositon('d',8).toPosition())
+    def makeMove(self, origin, destiny):
+        p = self.board.removePiece(origin)     #Remove a peça da origem e salva em 'p'
+        p.increaseMovement()                    #Acrescenta o movimento da peça 'p'
+
+        p_catch = self.board.removePiece(destiny)  #Remove a peça do destino e salva em p_catch
+        self.board.putPiece(p,destiny)             #Coloca a pela da origem no destino
+
+
+    
+
