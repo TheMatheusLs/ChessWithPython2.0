@@ -1,12 +1,17 @@
 #Representação do tabuleiro e movimentação básica do tabuleiro (Retirar as peças)
 from HelpModule import CreateMatrix         #Importa o módulo de criação de matriz
 from enum import Enum
+import abc
 
 class Position:                             #Classe posição
     def __init__(self, row, col):
         self._row = row
         self._col = col
     
+    def setterValues(self, row, col):
+        self._row = row
+        self._col = col
+
     @property                               #Método GET 'Row'
     def row(self):
         return self._row
@@ -18,7 +23,7 @@ class Position:                             #Classe posição
     def col(self):
         return self._col
     @col.setter                             #Método SET 'Col'
-    def col(self, row):
+    def col(self, col):
         self._col = col
 
     def __str__(self):
@@ -28,7 +33,7 @@ class Color(Enum):                          #Classe com as cores das peças
     BRANCA = 1
     PRETA = 2
 
-class Piece:                                #Classe peça
+class Piece(abc.ABC):                                #Classe peça
 
     def __init__(self, board, color):
         self._position = None
@@ -57,6 +62,10 @@ class Piece:                                #Classe peça
     
     def increaseMovement(self):
         self._move_count +=1
+
+    @abc.abstractmethod
+    def possibleMoves(self):
+        pass
 
 class Board:                                        #Classe tabuleiro
     

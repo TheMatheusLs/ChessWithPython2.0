@@ -6,11 +6,93 @@ class Tower(Piece):                 #Classe com as regras da 'torre' e herda da 
     def __str__(self):
         return 'T'                  #Imprime a 'Torre' como um 'T'    
     
+    def canMove(self, pos):
+        p = self.board.piece(pos)
+        return p == None or p.color is not self.color
+
+    def possibleMoves(self):
+        mat = CreateMatrix(self.board.row, self.board.col, None)
+
+        pos = Position(0,0)
+
+        #acima
+        pos.setterValues(self.position.row - 1, self.position.col)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.row -= 1
+        #Abaixo
+        pos.setterValues(self.position.row + 1, self.position.col)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.row += 1  
+        #Direita
+        pos.setterValues(self.position.row, self.position.col + 1)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.col += 1  
+        #Esquerda
+        pos.setterValues(self.position.row, self.position.col - 1)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.col -= 1 
+        return mat
+
 class King(Piece):                  #Classe com as regras da 'rei' e herda da classe Peça
     
     def __str__(self):
         return 'K'                  #Imprime a 'Rei' como um 'R' 
 
+    def canMove(self, pos):
+        p = self.board.piece(pos)
+        return (p == None) or p.color != self.color
+
+    def possibleMoves(self):
+        mat = CreateMatrix(self.board.row, self.board.col, None)
+
+        pos = Position(0,0)
+
+        #acima
+        pos.setterValues(self.position.row - 1, self.position.col)
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        #nordeste
+        pos.setterValues(self.position.row - 1, self.position.col+1)
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        #Direita
+        pos.setterValues(self.position.row , self.position.col+1)
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        #Suldeste
+        pos.setterValues(self.position.row +1, self.position.col+1)
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        #Abaixo
+        pos.setterValues(self.position.row+1, self.position.col)
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        #Sudoeste
+        pos.setterValues(self.position.row + 1, self.position.col-1)
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        #Esquerda
+        pos.setterValues(self.position.row, self.position.col-1)
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        #Noroeste
+        pos.setterValues(self.position.row - 1, self.position.col - 1)
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        return mat
+    
 class ChessPositon:
 
     def __init__(self, col, row):

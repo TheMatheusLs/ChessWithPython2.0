@@ -14,7 +14,13 @@ try:
 
         print('\nOrigem: ')
         origin = Screen.getPositionChess().toPosition()
-        print('Destino: ')
+
+        possiblePosition = game.board.piece(origin).possibleMoves()
+
+        os.system('cls')
+        Screen.PrintBoardAssist(game.board, possiblePosition)      #Imprime o tabuleiro 'tab'
+
+        print('\nDestino: ')
         destiny = Screen.getPositionChess().toPosition()
 
         game.makeMove(origin, destiny)

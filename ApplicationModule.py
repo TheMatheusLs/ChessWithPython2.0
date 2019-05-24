@@ -13,22 +13,37 @@ class Screen:                                               #Classe para a tela
         for r in range(board.row):     
             print(f'{8-r} ',end='')                     
             for c in range(board.col):
-                if (board.piece(Position(r,c)) == None):
-                    print('- ',end='')
-                else:
-                    Screen.printPiece(board.piece(Position(r,c)))
-                    print(' ',end='')
+                Screen.printPiece(board.piece(Position(r,c)))
             print()
         print('  a b c d e f g h')
     
+    @staticmethod                                           #Método Static
+    def PrintBoardAssist(board, possiblePosition):                                  #Método para imprimir um tabuleiro
+
+        BACKGROUND = '\033[46m'  
+        RESETBACKGROUND = '\033[m'
+        for r in range(board.row):     
+            print(f'{8-r} ',end='')                     
+            for c in range(board.col):
+                if (possiblePosition[r][c]):
+                    print(BACKGROUND,end='')
+                else:
+                    print(RESETBACKGROUND,end='')
+                Screen.printPiece(board.piece(Position(r,c)))
+            print(RESETBACKGROUND)
+        print('  a b c d e f g h')
+
     @staticmethod
     def printPiece(piece):
-        if (piece.color == Color.BRANCA):
-            print(piece,end='')
+        if piece == None:
+            print('- ',end='')
         else:
-            print('\033[0;33m',end='') #Código da cor
-            print(piece,end='')
-            print('\033[m',end='') #Código para limpar a cor
+            if (piece.color == Color.BRANCA):
+                print(piece,end=' ')
+            else:
+                print('\033[33m',end='') #Código da cor
+                print(piece,end=' ')
+                print('\033[m',end='') #Código para limpar a cor
 
     @staticmethod
     def getPositionChess():
