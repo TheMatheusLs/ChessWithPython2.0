@@ -1,5 +1,6 @@
 #Representação do tabuleiro e movimentação básica do tabuleiro (Retirar as peças)
 from HelpModule import CreateMatrix         #Importa o módulo de criação de matriz
+from enum import Enum
 
 class Position:                             #Classe posição
     def __init__(self, row, col):
@@ -23,15 +24,9 @@ class Position:                             #Classe posição
     def __str__(self):
         return f'{self.row},{self.col}'
 
-class Color:                                #Classe com as cores das peças
-    
-    @property
-    def preta(self):
-        return 'Preta'
-
-    @property
-    def branca(self):
-        return 'Branca'
+class Color(Enum):                          #Classe com as cores das peças
+    BRANCA = 1
+    PRETA = 2
 
 class Piece:                                #Classe peça
 
