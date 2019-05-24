@@ -126,6 +126,8 @@ class ChessGame:
         self._currentPlayer = Color.WHITE
         self._shift = 1
         self._finish = False
+        self._allPieces = set()
+        self._piecesCacth = set()
         self.putPiecesInit()
 
     @property
@@ -144,20 +146,38 @@ class ChessGame:
     def board(self):
         return self._board       
 
-    def putPiecesInit(self):
-        self.board.putPiece(Tower(self.board,Color.WHITE),ChessPositon('c',1).toPosition())  
-        self.board.putPiece(Tower(self.board,Color.WHITE),ChessPositon('c',2).toPosition())
-        self.board.putPiece(Tower(self.board,Color.WHITE),ChessPositon('d',2).toPosition())
-        self.board.putPiece(Tower(self.board,Color.WHITE),ChessPositon('e',2).toPosition())
-        self.board.putPiece(Tower(self.board,Color.WHITE),ChessPositon('e',1).toPosition())
-        self.board.putPiece(King(self.board,Color.WHITE),ChessPositon('d',1).toPosition())
+    def getPiecesCacth(self, color):
+        aux = set()
+        for x in self._piecesCacth:
+            if x.color == color:
+                aux.add(x)
+        return aux
 
-        self.board.putPiece(Tower(self.board,Color.BLACK),ChessPositon('c',7).toPosition())  
-        self.board.putPiece(Tower(self.board,Color.BLACK),ChessPositon('c',8).toPosition())
-        self.board.putPiece(Tower(self.board,Color.BLACK),ChessPositon('d',7).toPosition())
-        self.board.putPiece(Tower(self.board,Color.BLACK),ChessPositon('e',7).toPosition())
-        self.board.putPiece(Tower(self.board,Color.BLACK),ChessPositon('e',8).toPosition())
-        self.board.putPiece(King(self.board,Color.BLACK),ChessPositon('d',8).toPosition())
+    def piecesInGame(self, color):
+        aux = set()
+        for x in self._allPieces:
+            if x.color == color:
+                aux.add(x)
+        return aux.remove(self.getPiecesCacth(color))
+        
+    def putNewPiece(self, col, row, piece):
+        self._board.putPiece(piece,ChessPositon(col,row).toPosition())
+        self._allPieces.add(piece)
+
+    def putPiecesInit(self):
+        self.putNewPiece('c',1,Tower(self.board,Color.WHITE))
+        self.putNewPiece('c',2,Tower(self.board,Color.WHITE))
+        self.putNewPiece('d',2,Tower(self.board,Color.WHITE))
+        self.putNewPiece('e',2,Tower(self.board,Color.WHITE))
+        self.putNewPiece('e',1,Tower(self.board,Color.WHITE))
+        self.putNewPiece('d',1,King(self.board,Color.WHITE))
+
+        self.putNewPiece('c',7,Tower(self.board,Color.BLACK))
+        self.putNewPiece('c',8,Tower(self.board,Color.BLACK))
+        self.putNewPiece('d',7,Tower(self.board,Color.BLACK))
+        self.putNewPiece('e',7,Tower(self.board,Color.BLACK))
+        self.putNewPiece('e',8,Tower(self.board,Color.BLACK))
+        self.putNewPiece('d',8,King(self.board,Color.BLACK))
 
     def makeAMove(self,origin, destiny):
         self.makeMove(origin, destiny)
@@ -190,6 +210,8 @@ class ChessGame:
         p_catch = self.board.removePiece(destiny)  #Remove a peça do destino e salva em p_catch
         self.board.putPiece(p,destiny)             #Coloca a pela da origem no destino
 
+        if p_catch != None:
+            self._piecesCacth.add(p_catch)
 
     
 
