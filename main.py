@@ -13,7 +13,6 @@ try:
             os.system('cls')                   #Limpa a tela
 
             Screen.printGame(game)
-            
             print('\nOrigem: ')
             origin = Screen.getPositionChess().toPosition()
             game.validateOriginPosition(origin)

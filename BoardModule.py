@@ -63,6 +63,9 @@ class Piece(abc.ABC):                                #Classe peça
     
     def increaseMovement(self):
         self._move_count +=1
+    
+    def decrementMovement(self):
+        self._move_count -=1
 
     @abc.abstractmethod
     def possibleMoves(self):

@@ -126,9 +126,19 @@ class ChessGame:
         self._currentPlayer = Color.WHITE
         self._shift = 1
         self._finish = False
+
         self._allPieces = set()
         self._piecesCacth = set()
+
+        self._check = False
         self.putPiecesInit()
+    
+    @property
+    def check(self):
+        return self._check
+    @check.setter
+    def check(self, check):
+        self._check = check
 
     @property
     def shift(self):
@@ -144,27 +154,54 @@ class ChessGame:
 
     @property
     def board(self):
-        return self._board       
+        return self._board  
+    @board.setter 
+    def board(self,board):
+        self._board = board    
 
-    def getPiecesCacth(self, color):
+    def getPiecesCacth(self, color): #PecasCapituradas
         aux = set()
         for x in self._piecesCacth:
             if x.color == color:
                 aux.add(x)
         return aux
 
-    def piecesInGame(self, color):
+    def piecesInGame(self, color): #pecas em jogo
         aux = set()
         for x in self._allPieces:
             if x.color == color:
                 aux.add(x)
-        return aux.remove(self.getPiecesCacth(color))
+        return aux.difference(self.getPiecesCacth(color))
+
+    def opponent(self, color):
+        if color == Color.BLACK:
+            return Color.WHITE
+        else:
+            return Color.BLACK
+
+    def getKing(self, color):
+        for x in self.piecesInGame(color):
+            if x.__class__ is King:
+                return x
+        return None    
+
+    def thereIsCheck(self, color):    #Verifica se o rei dessa cor está em check
+        R = self.getKing(color)
+        if R == None:
+            raise BoardException(f"Não tem Rei da cor {color} no tabuleiro")
         
+        for x in self.piecesInGame(self.opponent(color)): #Para cada peça em game na cor oposta
+            mat = x.possibleMoves()
+            if mat[R.position.row][R.position.col]:
+                return True
+        return False
+
     def putNewPiece(self, col, row, piece):
-        self._board.putPiece(piece,ChessPositon(col,row).toPosition())
-        self._allPieces.add(piece)
+        self.board.putPiece(piece,ChessPositon(col,row).toPosition()) #OK
+        self._allPieces.add(piece) #OK
 
     def putPiecesInit(self):
+
         self.putNewPiece('c',1,Tower(self.board,Color.WHITE))
         self.putNewPiece('c',2,Tower(self.board,Color.WHITE))
         self.putNewPiece('d',2,Tower(self.board,Color.WHITE))
@@ -179,10 +216,28 @@ class ChessGame:
         self.putNewPiece('e',8,Tower(self.board,Color.BLACK))
         self.putNewPiece('d',8,King(self.board,Color.BLACK))
 
-    def makeAMove(self,origin, destiny):
-        self.makeMove(origin, destiny)
+    def makeAMove(self,origin, destiny):                #Realizar jogada
+        pieceCatch = self.makeMove(origin, destiny)
+        if self.thereIsCheck(self.currentPlayer):
+            self.resetMove(origin, destiny, pieceCatch)
+            raise BoardException("Você não pode se colocar em xeque!")
+        
+        if self.thereIsCheck(self.opponent(self.currentPlayer)):
+            self.check = True
+        else:
+            self.check = False
+
         self._shift += 1
         self.changePlayer()
+
+    def resetMove(self, origin, destiny, pieceCatch):
+        p = self.board.removePiece(destiny)
+        p.decrementMovement()
+
+        if pieceCatch != None:
+            self.board.putPiece(pieceCatch, destiny)
+            self._piecesCacth.remove(pieceCatch)
+        self.board.putPiece(p,origin)
 
     def validateOriginPosition(self, pos):
         if self.board.piece(pos) == None:
@@ -203,7 +258,7 @@ class ChessGame:
         else:
             self._currentPlayer = Color.WHITE
 
-    def makeMove(self, origin, destiny):
+    def makeMove(self, origin, destiny):        #executa movimento
         p = self.board.removePiece(origin)     #Remove a peça da origem e salva em 'p'
         p.increaseMovement()                    #Acrescenta o movimento da peça 'p'
 
@@ -212,6 +267,8 @@ class ChessGame:
 
         if p_catch != None:
             self._piecesCacth.add(p_catch)
+
+        return p_catch
 
     
 

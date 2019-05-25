@@ -9,15 +9,17 @@ os.system('echo on')
 class Screen:                                               #Classe para a tela
 
     @staticmethod
-    def printGame(game):
+    def printGame(game):            #Imprimir partida
         Screen.PrintBoard(game.board)      #Imprime o tabuleiro 'tab'
         print()
         Screen.printPiecesCatch(game)
         print(f'\nCurrent Shift: {game.shift}')
         print(f'Waiting for the {str(game.currentPlayer).replace("Color.","").capitalize()} play') 
+        if game.check:
+            print('XEQUE!')
 
     @staticmethod
-    def printPiecesCatch(game):
+    def printPiecesCatch(game):         #Imprimir peças capturadas
         print('Catch pieces: ')
         print('White: ',end='')
         Screen.printSet(game.getPiecesCacth(Color.WHITE))
@@ -26,7 +28,7 @@ class Screen:                                               #Classe para a tela
         print('\033[m',end='')
 
     @staticmethod
-    def printSet(vSet):
+    def printSet(vSet):         #Imprimir conjunto
         print('[',end='')
         for x in vSet:
             print(f'{x} ',end='')
@@ -72,7 +74,7 @@ class Screen:                                               #Classe para a tela
     @staticmethod
     def getPositionChess():
         s = input()
-        if len(s) == 2 and s[0] in 'abcdefgh':
+        if len(s) == 2 and s[0] in 'abcdefgh' and s[1] in '12345678':
             col = s[0]
             row = int(s[1])
             return ChessPositon(col, row)
