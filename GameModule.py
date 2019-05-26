@@ -151,6 +151,9 @@ class ChessGame:
     @property
     def finish(self):
         return self._finish
+    @finish.setter
+    def finish(self, finish):
+        self._finish = finish
 
     @property
     def board(self):
@@ -196,6 +199,23 @@ class ChessGame:
                 return True
         return False
 
+    def checkCheckMate(self, color):
+        if not self.thereIsCheck(color):
+            return False
+        for x in self.piecesInGame(color):
+            mat = x.possibleMoves()
+            for i in range(self.board.row):
+                for j in range(self.board.col):
+                    if mat[i][j]:
+                        posOrigin = x.position
+                        posDestiny = Position(i,j)
+                        p_catch = self.makeMove(posOrigin, posDestiny)
+                        checkCheck = self.thereIsCheck(color)
+                        self.resetMove(posOrigin,posDestiny, p_catch)
+                        if not checkCheck:
+                            return False
+        return True
+
     def putNewPiece(self, col, row, piece):
         self.board.putPiece(piece,ChessPositon(col,row).toPosition()) #OK
         self._allPieces.add(piece) #OK
@@ -203,18 +223,12 @@ class ChessGame:
     def putPiecesInit(self):
 
         self.putNewPiece('c',1,Tower(self.board,Color.WHITE))
-        self.putNewPiece('c',2,Tower(self.board,Color.WHITE))
-        self.putNewPiece('d',2,Tower(self.board,Color.WHITE))
-        self.putNewPiece('e',2,Tower(self.board,Color.WHITE))
-        self.putNewPiece('e',1,Tower(self.board,Color.WHITE))
         self.putNewPiece('d',1,King(self.board,Color.WHITE))
+        self.putNewPiece('h',7,Tower(self.board,Color.WHITE))
 
-        self.putNewPiece('c',7,Tower(self.board,Color.BLACK))
-        self.putNewPiece('c',8,Tower(self.board,Color.BLACK))
-        self.putNewPiece('d',7,Tower(self.board,Color.BLACK))
-        self.putNewPiece('e',7,Tower(self.board,Color.BLACK))
-        self.putNewPiece('e',8,Tower(self.board,Color.BLACK))
-        self.putNewPiece('d',8,King(self.board,Color.BLACK))
+        self.putNewPiece('a',8,King(self.board,Color.BLACK))
+        self.putNewPiece('b',8,Tower(self.board,Color.BLACK))
+        
 
     def makeAMove(self,origin, destiny):                #Realizar jogada
         pieceCatch = self.makeMove(origin, destiny)
@@ -227,8 +241,11 @@ class ChessGame:
         else:
             self.check = False
 
-        self._shift += 1
-        self.changePlayer()
+        if self.checkCheckMate(self.opponent(self.currentPlayer)):
+            self.finish = True
+        else:
+            self._shift += 1
+            self.changePlayer()
 
     def resetMove(self, origin, destiny, pieceCatch):
         p = self.board.removePiece(destiny)

@@ -33,5 +33,8 @@ try:
             print(f'\033[31m{e}\033[m')
             input()
 
-except BoardException as e:
-    print(f'\033[1;31m{e}\033[m')
+    os.system('cls')                    #Limpa a tela
+    Screen.printGame(game)              #Imprime a partida
+
+except BoardException as e:             #Trata o erro
+    print(f'\033[1;31m{e}\033[m')       #Imprime o erro para na tela

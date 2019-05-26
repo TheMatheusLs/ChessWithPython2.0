@@ -7,6 +7,10 @@ import os           #Módulo do sistema
 os.system('echo on')
 
 class Screen:                                               #Classe para a tela
+    COLOR_RED = '\033[1;31m'    #Código para a cor vermelha
+    COLOR_YELLOW = '\033[33m'   #Código para a cor amarela
+    COLOR_RESET = '\033[m'      #Código para voltar a cor normal do terminal
+    BACKGROUND = '\033[46m'     #Backgound azul
 
     @staticmethod
     def printGame(game):            #Imprimir partida
@@ -14,18 +18,21 @@ class Screen:                                               #Classe para a tela
         print()
         Screen.printPiecesCatch(game)
         print(f'\nCurrent Shift: {game.shift}')
-        print(f'Waiting for the {str(game.currentPlayer).replace("Color.","").capitalize()} play') 
-        if game.check:
-            print('XEQUE!')
-
+        if not game.finish:
+            print(f'Waiting for the {str(game.currentPlayer).replace("Color.","").capitalize()} play') 
+            if game.check:
+                print(f'{Screen.COLOR_RED}CHECK!{Screen.COLOR_RESET}')
+        else:
+            print(f'{Screen.COLOR_RED}CHECKMATE!{Screen.COLOR_RESET}')
+            print(f'Winner: {str(game.currentPlayer).replace("Color.","").capitalize()}')
     @staticmethod
     def printPiecesCatch(game):         #Imprimir peças capturadas
         print('Catch pieces: ')
         print('White: ',end='')
         Screen.printSet(game.getPiecesCacth(Color.WHITE))
-        print('Black: \033[33m',end='')
+        print(f'Black: {Screen.COLOR_YELLOW}',end='')
         Screen.printSet(game.getPiecesCacth(Color.BLACK))
-        print('\033[m',end='')
+        print(f'{Screen.COLOR_RESET}',end='')
 
     @staticmethod
     def printSet(vSet):         #Imprimir conjunto
@@ -46,17 +53,16 @@ class Screen:                                               #Classe para a tela
     @staticmethod                                           #Método Static
     def PrintBoardAssist(board, possiblePosition):                                  #Método para imprimir um tabuleiro
 
-        BACKGROUND = '\033[46m'  
-        RESETBACKGROUND = '\033[m'
+        
         for r in range(board.row):     
             print(f'{8-r} ',end='')                     
             for c in range(board.col):
                 if (possiblePosition[r][c]):
-                    print(BACKGROUND,end='')
+                    print(f'{Screen.BACKGROUND}',end='')
                 else:
-                    print(RESETBACKGROUND,end='')
+                    print(f'{Screen.COLOR_RESET}',end='')
                 Screen.printPiece(board.piece(Position(r,c)))
-            print(RESETBACKGROUND)
+            print(Screen.COLOR_RESET)
         print('  a b c d e f g h')
 
     @staticmethod
@@ -67,9 +73,9 @@ class Screen:                                               #Classe para a tela
             if (piece.color == Color.WHITE):
                 print(piece,end=' ')
             else:
-                print('\033[33m',end='') #Código da cor
+                print(f'{Screen.COLOR_YELLOW}',end='') #Código da cor
                 print(piece,end=' ')
-                print('\033[m',end='') #Código para limpar a cor
+                print(f'{Screen.COLOR_RESET}',end='') #Código para limpar a cor
 
     @staticmethod
     def getPositionChess():
