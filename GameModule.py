@@ -1,20 +1,29 @@
 #Inteligência do jogo de xadrez, como as peças vão se movimentação. Mecanica do jogo
 from BoardModule import *           #Importa o módulo das peças
 
-class Tower(Piece):                 #Classe com as regras da 'torre' e herda da classe Peça
-    
+class Rook(Piece):                 
+    """
+    Classe 'Rook', contendo as informação da peça. Essa clase herda as informação da classe mãe 'Piece'.
+    \nMétodos:
+    \n- __str__:
+    \n- canMove(self, pos):
+    \n- possibleMoves(self):
+    """
     def __str__(self):
-        return 'T'                  #Imprime a 'Torre' como um 'T'    
-    
+        #return 'R'                  #Imprime a 'Torre' como um 'T'    
+        return '\u2656'                 #imprime o unicode da torre
     def canMove(self, pos):
         p = self.board.piece(pos)
         return p == None or p.color is not self.color
 
     def possibleMoves(self):
+        """
+        Cria uma Matriz de possíveis movimentos da 'Torre'.
+        \nRetorno:
+        \n- Matriz contendo os possíveis movimentos.
+        """
         mat = CreateMatrix(self.board.row, self.board.col, None)
-
         pos = Position(0,0)
-
         #acima
         pos.setterValues(self.position.row - 1, self.position.col)
         while self.board.validPosition(pos) and self.canMove(pos):
@@ -46,19 +55,29 @@ class Tower(Piece):                 #Classe com as regras da 'torre' e herda da 
         return mat
 
 class King(Piece):                  #Classe com as regras da 'rei' e herda da classe Peça
-    
+    """
+    Classe 'King', contendo as informação da peça. Essa clase herda as informação da classe mãe 'Piece'.
+    \nMétodos:
+    \n- __str__:
+    \n- canMove(self, pos):
+    \n- possibleMoves(self):
+    """
     def __str__(self):
-        return 'K'                  #Imprime a 'Rei' como um 'R' 
+        #return 'K'                  #Imprime a 'Rei' como um 'K' 
+        return '\u2654'             #Imprime o unicode do Rei
 
     def canMove(self, pos):
         p = self.board.piece(pos)
         return (p == None) or p.color != self.color
 
     def possibleMoves(self):
+        """
+        Cria uma Matriz de possíveis movimentos do 'Rei'.
+        \nRetorno:
+        \n- Matriz contendo os possíveis movimentos.
+        """
         mat = CreateMatrix(self.board.row, self.board.col, None)
-
         pos = Position(0,0)
-
         #acima
         pos.setterValues(self.position.row - 1, self.position.col)
         if self.board.validPosition(pos) and self.canMove(pos):
@@ -92,7 +111,242 @@ class King(Piece):                  #Classe com as regras da 'rei' e herda da cl
         if self.board.validPosition(pos) and self.canMove(pos):
             mat[pos.row][pos.col] = True
         return mat
+
+class Bishop(Piece):
+    """
+    Classe 'Bishop', contendo as informação da peça. Essa clase herda as informação da classe mãe 'Piece'.
+    \nMétodos:
+    \n- __str__:
+    \n- canMove(self, pos):
+    \n- possibleMoves(self):
+    """
+    def __str__(self):
+        #return 'B'                  #Imprime o 'Bispo' como um 'B' 
+        return '\u265D'             #Imprime o unicode do bispo
+
+    def canMove(self, pos):
+        p = self.board.piece(pos)
+        return (p == None) or p.color != self.color
+
+    def possibleMoves(self):
+        """
+        Cria uma Matriz de possíveis movimentos do 'bispo'.
+        \nRetorno:
+        \n- Matriz contendo os possíveis movimentos.
+        """
+        mat = CreateMatrix(self.board.row, self.board.col, None)
+
+        pos = Position(0,0)
+
+        #NO
+        pos.setterValues(self.position.row - 1, self.position.col - 1)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.setterValues(pos.row - 1, pos.col -1)
+        #NE
+        pos.setterValues(self.position.row - 1, self.position.col + 1)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.setterValues(pos.row - 1, pos.col + 1) 
+        #SE
+        pos.setterValues(self.position.row + 1, self.position.col + 1)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.setterValues(pos.row + 1, pos.col + 1)  
+        #SO
+        pos.setterValues(self.position.row + 1, self.position.col - 1)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.setterValues(pos.row + 1, pos.col - 1)  
+        return mat
+
+class Knight(Piece):
+    """
+    Classe 'Bishop', contendo as informação da peça. Essa clase herda as informação da classe mãe 'Piece'.
+    \nMétodos:
+    \n- __str__:
+    \n- canMove(self, pos):
+    \n- possibleMoves(self):
+    """
+    def __str__(self):
+        #return 'N'                 #Imprime o 'Cavalo' como um 'N' 
+        return '\u2658'             #Imprime o unicode do 'Cavalo'
+
+    def canMove(self, pos):
+        p = self.board.piece(pos)
+        return (p == None) or p.color != self.color
     
+    def possibleMoves(self):
+        mat = CreateMatrix(self.board.row, self.board.col, None)
+        pos = Position(0,0)
+        
+        pos.setterValues(self.position.row - 1, self.position.col - 2) #
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        pos.setterValues(self.position.row - 2, self.position.col - 1) #
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        pos.setterValues(self.position.row - 2, self.position.col + 1) #
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        pos.setterValues(self.position.row - 1, self.position.col + 2) #
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        pos.setterValues(self.position.row + 1, self.position.col + 2) #
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        pos.setterValues(self.position.row + 2, self.position.col - 1) #
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        pos.setterValues(self.position.row + 2, self.position.col - 1) #
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        pos.setterValues(self.position.row + 1, self.position.col - 2) #
+        if self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+        return mat
+
+class Queen(Piece):
+    """
+    Classe 'Queen', contendo as informação da peça. Essa clase herda as informação da classe mãe 'Piece'.
+    \nMétodos:
+    \n- __str__:
+    \n- canMove(self, pos):
+    \n- possibleMoves(self):
+    """
+    def __str__(self):
+        #return 'Q'                 #Imprime a 'Dama' como um 'Q' 
+        return '\u2655'             #Imprime o unicode do 'Dama'
+
+    def canMove(self, pos):
+        p = self.board.piece(pos)
+        return (p == None) or p.color != self.color
+    def possibleMoves(self):
+        """
+        Cria uma Matriz de possíveis movimentos da 'Torre'.
+        \nRetorno:
+        \n- Matriz contendo os possíveis movimentos.
+        """
+        mat = CreateMatrix(self.board.row, self.board.col, None)
+        pos = Position(0,0) 
+        #acima
+        pos.setterValues(self.position.row - 1, self.position.col)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.row -= 1
+        #Abaixo
+        pos.setterValues(self.position.row + 1, self.position.col)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.row += 1  
+        #Direita
+        pos.setterValues(self.position.row, self.position.col + 1)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.col += 1  
+        #Esquerda
+        pos.setterValues(self.position.row, self.position.col - 1)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.col -= 1 
+        #NO
+        pos.setterValues(self.position.row - 1, self.position.col - 1)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.setterValues(pos.row - 1, pos.col -1)
+        #NE
+        pos.setterValues(self.position.row - 1, self.position.col + 1)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.setterValues(pos.row - 1, pos.col + 1) 
+        #SE
+        pos.setterValues(self.position.row + 1, self.position.col + 1)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.setterValues(pos.row + 1, pos.col + 1)  
+        #SO
+        pos.setterValues(self.position.row + 1, self.position.col - 1)
+        while self.board.validPosition(pos) and self.canMove(pos):
+            mat[pos.row][pos.col] = True
+            if self.board.piece(pos) is not None and self.board.piece(pos).color is not self.color:
+                break
+            pos.setterValues(pos.row + 1, pos.col - 1)  
+        return mat
+
+class Pawn(Piece):
+    """
+    Classe 'Queen', contendo as informação da peça. Essa clase herda as informação da classe mãe 'Piece'.
+    \nMétodos:
+    \n- __str__:
+    \n- canMove(self, pos):
+    \n- possibleMoves(self):
+    """
+    def __str__(self):
+        #return 'P'                 #Imprime a 'peão' como um 'P' 
+        return '\u2659'             #Imprime o unicode do 'Peão'
+    
+    def thereIsOpponent(self, pos):
+        p = self.board.piece(pos)
+        if p == None:
+            return False
+        return p != None or p.color != self.color
+
+    def free(self, pos):
+        return self.board.piece(pos) == None
+
+    def possibleMoves(self):
+        mat = CreateMatrix(self.board.row, self.board.col, None)
+        pos = Position(0,0)
+
+        if self.color == Color.WHITE:
+            pos.setterValues(self.position.row - 1, self.position.col) #
+            if self.board.validPosition(pos) and self.free(pos):
+                mat[pos.row][pos.col] = True   
+            pos.setterValues(self.position.row - 2, self.position.col) #
+            if self.board.validPosition(pos) and self.free(pos) and self.move_count == 0:
+                mat[pos.row][pos.col] = True 
+            pos.setterValues(self.position.row - 1, self.position.col - 1) #
+            if self.board.validPosition(pos) and self.thereIsOpponent(pos):
+                mat[pos.row][pos.col] = True
+            pos.setterValues(self.position.row - 1, self.position.col + 1) #
+            if self.board.validPosition(pos) and self.thereIsOpponent(pos):
+                mat[pos.row][pos.col] = True  
+        else:
+            pos.setterValues(self.position.row + 1, self.position.col) #
+            if self.board.validPosition(pos) and self.free(pos):
+                mat[pos.row][pos.col] = True   
+            pos.setterValues(self.position.row + 2, self.position.col) #
+            if self.board.validPosition(pos) and self.free(pos) and self.move_count == 0:
+                mat[pos.row][pos.col] = True 
+            pos.setterValues(self.position.row + 1, self.position.col - 1) #
+            if self.board.validPosition(pos) and self.thereIsOpponent(pos):
+                mat[pos.row][pos.col] = True
+            pos.setterValues(self.position.row + 1, self.position.col + 1) #
+            if self.board.validPosition(pos) and self.thereIsOpponent(pos):
+                mat[pos.row][pos.col] = True 
+        return mat   
 class ChessPositon:
 
     def __init__(self, col, row):
@@ -222,12 +476,43 @@ class ChessGame:
 
     def putPiecesInit(self):
 
-        self.putNewPiece('c',1,Tower(self.board,Color.WHITE))
-        self.putNewPiece('d',1,King(self.board,Color.WHITE))
-        self.putNewPiece('h',7,Tower(self.board,Color.WHITE))
+        self.putNewPiece('a',1, Rook(self.board,Color.WHITE))
+        self.putNewPiece('b',1, Knight(self.board, Color.WHITE))
+        self.putNewPiece('c',1, Bishop(self.board, Color.WHITE))
+        self.putNewPiece('d',1, Queen(self.board, Color.WHITE))
+        self.putNewPiece('e',1, King(self.board, Color.WHITE))
+        self.putNewPiece('f',1, Bishop(self.board, Color.WHITE))
+        self.putNewPiece('h',1, Rook(self.board,Color.WHITE))
+        self.putNewPiece('g',1, Knight(self.board, Color.WHITE))
 
-        self.putNewPiece('a',8,King(self.board,Color.BLACK))
-        self.putNewPiece('b',8,Tower(self.board,Color.BLACK))
+        self.putNewPiece('a',8, Rook(self.board,Color.BLACK))
+        self.putNewPiece('b',8, Knight(self.board, Color.BLACK))
+        self.putNewPiece('c',8, Bishop(self.board, Color.BLACK))
+        self.putNewPiece('e',8, Queen(self.board, Color.BLACK))
+        self.putNewPiece('d',8, King(self.board, Color.BLACK))
+        self.putNewPiece('f',8, Bishop(self.board, Color.BLACK))
+        self.putNewPiece('h',8, Rook(self.board,Color.BLACK))
+        self.putNewPiece('g',8, Knight(self.board, Color.BLACK))   
+
+        self.putNewPiece('a',2, Pawn(self.board, Color.WHITE)) 
+        self.putNewPiece('b',2, Pawn(self.board, Color.WHITE))
+        self.putNewPiece('c',2, Pawn(self.board, Color.WHITE)) 
+        self.putNewPiece('d',2, Pawn(self.board, Color.WHITE)) 
+        self.putNewPiece('e',2, Pawn(self.board, Color.WHITE)) 
+        self.putNewPiece('f',2, Pawn(self.board, Color.WHITE))
+        self.putNewPiece('g',2, Pawn(self.board, Color.WHITE)) 
+        self.putNewPiece('h',2, Pawn(self.board, Color.WHITE)) 
+        
+        self.putNewPiece('a',7, Pawn(self.board, Color.BLACK)) 
+        self.putNewPiece('b',7, Pawn(self.board, Color.BLACK))
+        self.putNewPiece('c',7, Pawn(self.board, Color.BLACK)) 
+        self.putNewPiece('d',7, Pawn(self.board, Color.BLACK)) 
+        self.putNewPiece('e',7, Pawn(self.board, Color.BLACK)) 
+        self.putNewPiece('f',7, Pawn(self.board, Color.BLACK))
+        self.putNewPiece('g',7, Pawn(self.board, Color.BLACK)) 
+        self.putNewPiece('h',7, Pawn(self.board, Color.BLACK))     
+
+        
         
 
     def makeAMove(self,origin, destiny):                #Realizar jogada

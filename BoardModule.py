@@ -79,7 +79,13 @@ class Piece(abc.ABC):                                #Classe peça
                     return True
         return False
 
-    def  canMoveTo(self, pos):
+    def  canMoveTo(self, pos):                          #Movimento possível
+        """O método retorna 'True', se a posição 'pos' é um movimento possível para a peça.
+        \nParametros: 
+        \n- Pos: Classe 'Position'.
+        \nRetorna:
+        \n- True: Se a posição for um movimento possível para a peça.
+        \n- False: Se a posição não for um movimento possível para a peça."""
         return self.possibleMoves()[pos.row][pos.col]
 
 

@@ -11,6 +11,7 @@ class Screen:                                               #Classe para a tela
     COLOR_YELLOW = '\033[33m'   #Código para a cor amarela
     COLOR_RESET = '\033[m'      #Código para voltar a cor normal do terminal
     BACKGROUND = '\033[46m'     #Backgound azul
+    WARNING = '\u26A0'          #Código para o simbolo de atenção
 
     @staticmethod
     def printGame(game):            #Imprimir partida

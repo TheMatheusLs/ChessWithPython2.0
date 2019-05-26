@@ -30,11 +30,11 @@ try:
 
         except BoardException as e:
             e = str(e).replace("'","")
-            print(f'\033[31m{e}\033[m')
+            print(f'{Screen.COLOR_RED}{Screen.WARNING} {e} {Screen.WARNING}{Screen.COLOR_RESET}')
             input()
 
     os.system('cls')                    #Limpa a tela
     Screen.printGame(game)              #Imprime a partida
 
 except BoardException as e:             #Trata o erro
-    print(f'\033[1;31m{e}\033[m')       #Imprime o erro para na tela
+    print(f'{Screen.COLORa1_RED}{Screen.WARNING} {e} {Screen.WARNING}{Screen.COLOR_RESET}')       #Imprime o erro para na tela
