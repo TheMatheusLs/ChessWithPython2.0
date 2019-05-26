@@ -1,8 +1,8 @@
-from BoardModule import *  #Importa os modulos do tabuleiro
-from ApplicationModule import *            #Importa o modulo de tela
-from GameModule import *                        #Importa os modulos do jogo
+from BoardModule import *               #Importa os modulos do tabuleiro
+from ApplicationModule import *         #Importa o modulo de tela
+from GameModule import *                #Importa os modulos do jogo
 import socket      
-import os           #Módulo do sistema
+import os                               #Módulo do sistema
 
 try:
        

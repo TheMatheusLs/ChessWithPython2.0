@@ -62,6 +62,17 @@ class King(Piece):                  #Classe com as regras da 'rei' e herda da cl
     \n- canMove(self, pos):
     \n- possibleMoves(self):
     """
+    def __init__(self, board, color, game):
+            self._position = None
+            self._board = board
+            self._color = color
+            self._move_count = 0
+            self._chessGameK = game
+
+    @property
+    def chessGameK(self):
+        return self._chessGameK
+
     def __str__(self):
         #return 'K'                  #Imprime a 'Rei' como um 'K' 
         return '\u2654'             #Imprime o unicode do Rei
@@ -69,6 +80,12 @@ class King(Piece):                  #Classe com as regras da 'rei' e herda da cl
     def canMove(self, pos):
         p = self.board.piece(pos)
         return (p == None) or p.color != self.color
+
+    def checkRookForCastling(self, pos):
+        p = self.board.piece(pos)
+        if p == None:
+            return False
+        return p != None and p.__class__ is Rook and p.color == self.color and p.move_count == 0
 
     def possibleMoves(self):
         """
@@ -110,6 +127,24 @@ class King(Piece):                  #Classe com as regras da 'rei' e herda da cl
         pos.setterValues(self.position.row - 1, self.position.col - 1)
         if self.board.validPosition(pos) and self.canMove(pos):
             mat[pos.row][pos.col] = True
+
+        #Jogada Especial Roque
+        if self.move_count == 0 or self.chessGameK.check:
+            #Jogada especial roque pequeno
+            posR1 = Position(self.position.row, self.position.col + 3)
+            if self.checkRookForCastling(posR1):
+                posP1 = Position(self.position.row, self.position.col + 1)
+                posP2 = Position(self.position.row, self.position.col + 2)
+                if self.board.piece(posP1) == None and self.board.piece(posP2) == None:
+                    mat[self.position.row][self.position.col + 2] = True
+            #Jogada especial roque grande
+            posR2 = Position(self.position.row, self.position.col - 4)
+            if self.checkRookForCastling(posR2):
+                posP1 = Position(self.position.row, self.position.col - 1)
+                posP2 = Position(self.position.row, self.position.col - 2)
+                posP3 = Position(self.position.row, self.position.col - 3)
+                if self.board.piece(posP1) == None and self.board.piece(posP2) == None and self.board.piece(posP3) == None:
+                    mat[self.position.row][self.position.col - 2] = True
         return mat
 
 class Bishop(Piece):
@@ -203,7 +238,7 @@ class Knight(Piece):
         pos.setterValues(self.position.row + 1, self.position.col + 2) #
         if self.board.validPosition(pos) and self.canMove(pos):
             mat[pos.row][pos.col] = True
-        pos.setterValues(self.position.row + 2, self.position.col - 1) #
+        pos.setterValues(self.position.row + 2, self.position.col + 1) #
         if self.board.validPosition(pos) and self.canMove(pos):
             mat[pos.row][pos.col] = True
         pos.setterValues(self.position.row + 2, self.position.col - 1) #
@@ -347,6 +382,7 @@ class Pawn(Piece):
             if self.board.validPosition(pos) and self.thereIsOpponent(pos):
                 mat[pos.row][pos.col] = True 
         return mat   
+
 class ChessPositon:
 
     def __init__(self, col, row):
@@ -480,7 +516,7 @@ class ChessGame:
         self.putNewPiece('b',1, Knight(self.board, Color.WHITE))
         self.putNewPiece('c',1, Bishop(self.board, Color.WHITE))
         self.putNewPiece('d',1, Queen(self.board, Color.WHITE))
-        self.putNewPiece('e',1, King(self.board, Color.WHITE))
+        self.putNewPiece('e',1, King(self.board, Color.WHITE, self))
         self.putNewPiece('f',1, Bishop(self.board, Color.WHITE))
         self.putNewPiece('h',1, Rook(self.board,Color.WHITE))
         self.putNewPiece('g',1, Knight(self.board, Color.WHITE))
@@ -488,8 +524,8 @@ class ChessGame:
         self.putNewPiece('a',8, Rook(self.board,Color.BLACK))
         self.putNewPiece('b',8, Knight(self.board, Color.BLACK))
         self.putNewPiece('c',8, Bishop(self.board, Color.BLACK))
-        self.putNewPiece('e',8, Queen(self.board, Color.BLACK))
-        self.putNewPiece('d',8, King(self.board, Color.BLACK))
+        self.putNewPiece('d',8, Queen(self.board, Color.BLACK))
+        self.putNewPiece('e',8, King(self.board, Color.BLACK, self))
         self.putNewPiece('f',8, Bishop(self.board, Color.BLACK))
         self.putNewPiece('h',8, Rook(self.board,Color.BLACK))
         self.putNewPiece('g',8, Knight(self.board, Color.BLACK))   
@@ -539,7 +575,24 @@ class ChessGame:
         if pieceCatch != None:
             self.board.putPiece(pieceCatch, destiny)
             self._piecesCacth.remove(pieceCatch)
+
         self.board.putPiece(p,origin)
+
+        #Jogada especial Roque Pequeno
+        if p.__class__ is King and destiny.col == origin.col + 2:   #Verifica se o movimento foi um roque pequeno
+            originRook = Position(origin.row, origin.col + 3)       #Pega a posição de origem da torre
+            destinyRook = Position(origin.row, origin.col + 1)      #pega a posição de destino da torre
+            rook = self.board.removePiece(destinyRook)               #Remove a torre da posição de origem 
+            rook.decrementMovement()                                 #Incrementa o movimento da torre
+            self.board.putPiece(rook, originRook)                  #Coloca a torre na sua posição de destino 
+
+        #Jogada especial Roque Pequeno
+        if p.__class__ is King and destiny.col == origin.col - 2:   #Verifica se o movimento foi um roque pequeno
+            originRook = Position(origin.row, origin.col - 4)       #Pega a posição de origem da torre
+            destinyRook = Position(origin.row, origin.col - 1)      #pega a posição de destino da torre
+            rook = self.board.removePiece(destinyRook)               #Remove a torre da posição de origem 
+            rook.decrementMovement()                                 #Incrementa o movimento da torre
+            self.board.putPiece(rook, originRook)                  #Coloca a torre na sua posição de destino 
 
     def validateOriginPosition(self, pos):
         if self.board.piece(pos) == None:
@@ -569,6 +622,22 @@ class ChessGame:
 
         if p_catch != None:
             self._piecesCacth.add(p_catch)
+
+        #Jogada especial Roque Pequeno
+        if p.__class__ is King and destiny.col == origin.col + 2:   #Verifica se o movimento foi um roque pequeno
+            originRook = Position(origin.row, origin.col + 3)        #Pega a posição de origem da torre
+            destinyRook = Position(origin.row, origin.col + 1)       #pega a posição de destino da torre
+            rook = self.board.removePiece(originRook)               #Remove a torre da posição de origem 
+            rook.increaseMovement()                                 #Incrementa o movimento da torre
+            self.board.putPiece(rook, destinyRook)                  #Coloca a torre na sua posição de destino 
+
+        #Jogada especial Roque Grande
+        if p.__class__ is King and destiny.col == origin.col - 2:   #Verifica se o movimento foi um roque pequeno
+            originRook = Position(origin.row, origin.col - 4)       #Pega a posição de origem da torre
+            destinyRook = Position(origin.row, origin.col - 1)      #pega a posição de destino da torre
+            rook = self.board.removePiece(originRook)               #Remove a torre da posição de origem 
+            rook.increaseMovement()                                 #Incrementa o movimento da torre
+            self.board.putPiece(rook, destinyRook)                  #Coloca a torre na sua posição de destino 
 
         return p_catch
 
