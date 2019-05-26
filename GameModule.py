@@ -346,7 +346,7 @@ class Pawn(Piece):
         p = self.board.piece(pos)
         if p == None:
             return False
-        return p != None or p.color != self.color
+        return p.color != self.color
 
     def free(self, pos):
         return self.board.piece(pos) == None
